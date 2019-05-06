@@ -45,12 +45,18 @@ class QtAT4 < Formula
     sha256 "5e81df9a1c35a5aec21241a82707ad6ac198b2e44928389722b64da341260c5d"
   end
 
+  # Patch to fix ODBC crash
+  patch do
+    url "https://raw.githubusercontent.com/fcollot/homebrew-qt4/master/patches/odbc.patch"
+    sha256 "674483310603f147c3b4fcd9572aae5968c994ffc9c5343e13d8ab3fa735557f"
+  end
+
   option "with-docs", "Build documentation"
 
   depends_on "openssl"
   depends_on "dbus" => :optional
-  depends_on "mysql" => :optional
-  depends_on "postgresql" => :optional
+  #depends_on "mysql" => :optional
+  #depends_on "postgresql" => :optional
 
   deprecated_option "qtdbus" => "with-dbus"
   deprecated_option "with-d-bus" => "with-dbus"
@@ -92,6 +98,8 @@ class QtAT4 < Formula
       -cocoa
       -no-webkit
       -qt3support
+      -v
+      -plugin-sql-odbc
     ]
 
     if ENV.compiler == :clang
@@ -112,8 +120,8 @@ class QtAT4 < Formula
     args << "-I" << Formula["openssl"].opt_include
     args << "-L" << Formula["openssl"].opt_lib
 
-    args << "-plugin-sql-mysql" if build.with? "mysql"
-    args << "-plugin-sql-psql" if build.with? "postgresql"
+    #args << "-plugin-sql-mysql" if build.with? "mysql"
+    #args << "-plugin-sql-psql" if build.with? "postgresql"
 
     if build.with? "dbus"
       dbus_opt = Formula["dbus"].opt_prefix

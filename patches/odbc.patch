@@ -1,0 +1,15 @@
+diff --git a/src/sql/drivers/odbc/qsql_odbc.cpp b/src/sql/drivers/odbc/qsql_odbc.cpp
+index 18897372c3..2cc4f31a10 100644
+--- a/src/sql/drivers/odbc/qsql_odbc.cpp
++++ b/src/sql/drivers/odbc/qsql_odbc.cpp
+@@ -234,8 +234,10 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+                 *nativeCode = nativeCode_;
+             QString tmpstore;
+ #ifdef UNICODE
++            qDebug() << "------- UNICODE";
+             tmpstore = fromSQLTCHAR(description_, msgLen);
+ #else
++            qDebug() << "------- NOT UNICODE";
+             tmpstore = QString::fromUtf8((const char*)description_.constData(), msgLen);
+ #endif
+             if(result != tmpstore) {
