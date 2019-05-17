@@ -1,9 +1,15 @@
 diff --git a/src/sql/drivers/odbc/qsql_odbc.cpp b/src/sql/drivers/odbc/qsql_odbc.cpp
-index 18897372c3..41adfe2c6a 100644
+index 18897372c3..ffb81942b7 100644
 --- a/src/sql/drivers/odbc/qsql_odbc.cpp
 +++ b/src/sql/drivers/odbc/qsql_odbc.cpp
-@@ -76,15 +76,19 @@ inline static QString fromSQLTCHAR(const QVarLengthArray<SQLTCHAR>& input, int s
+@@ -72,19 +72,25 @@ inline static QString fromSQLTCHAR(const QVarLengthArray<SQLTCHAR>& input, int s
+     QString result;
+ 
+     int realsize = qMin(size, input.size());
++    qDebug() << "realsize " << realsize;
+     if(realsize > 0 && input[realsize-1] == 0)
          realsize--;
++    qDebug() << "realsize " << realsize;
      switch(sizeof(SQLTCHAR)) {
          case 1:
 +            qDebug() << "1";
@@ -22,7 +28,7 @@ index 18897372c3..41adfe2c6a 100644
              qCritical() << "sizeof(SQLTCHAR) is " << sizeof(SQLTCHAR) << "Don't know how to handle this";
      }
      return result;
-@@ -208,9 +212,10 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+@@ -208,9 +214,10 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
      QVarLengthArray<SQLTCHAR> description_(SQL_MAX_MESSAGE_LENGTH);
      QString result;
      int i = 1;
@@ -34,22 +40,22 @@ index 18897372c3..41adfe2c6a 100644
          r = SQLGetDiagRec(handleType,
                            handle,
                            i,
-@@ -219,8 +224,10 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+@@ -219,8 +226,10 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
                            0,
                            0,
                            &msgLen);
-+        qDebug() << "B";
++        qDebug() << "B" << msgLen;
          if ((r == SQL_SUCCESS || r == SQL_SUCCESS_WITH_INFO) && msgLen > 0)
              description_.resize(msgLen+1);
 +        qDebug() << "------- resized to " << description_.size();
          r = SQLGetDiagRec(handleType,
                              handle,
                              i,
-@@ -229,25 +236,38 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+@@ -229,25 +238,38 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
                              description_.data(),
                              description_.size(),
                              &msgLen);
-+        qDebug() << "C";
++        qDebug() << "C" << msgLen;
          if (r == SQL_SUCCESS || r == SQL_SUCCESS_WITH_INFO) {
 +            qDebug() << "D";
              if (nativeCode)
