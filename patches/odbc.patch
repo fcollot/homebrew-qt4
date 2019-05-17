@@ -1,5 +1,5 @@
 diff --git a/src/sql/drivers/odbc/qsql_odbc.cpp b/src/sql/drivers/odbc/qsql_odbc.cpp
-index 18897372c3..673ff53b6d 100644
+index 18897372c3..41adfe2c6a 100644
 --- a/src/sql/drivers/odbc/qsql_odbc.cpp
 +++ b/src/sql/drivers/odbc/qsql_odbc.cpp
 @@ -76,15 +76,19 @@ inline static QString fromSQLTCHAR(const QVarLengthArray<SQLTCHAR>& input, int s
@@ -22,7 +22,7 @@ index 18897372c3..673ff53b6d 100644
              qCritical() << "sizeof(SQLTCHAR) is " << sizeof(SQLTCHAR) << "Don't know how to handle this";
      }
      return result;
-@@ -208,7 +212,7 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+@@ -208,9 +212,10 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
      QVarLengthArray<SQLTCHAR> description_(SQL_MAX_MESSAGE_LENGTH);
      QString result;
      int i = 1;
@@ -30,17 +30,33 @@ index 18897372c3..673ff53b6d 100644
 +    qDebug() << "------- " << description_.size();
      description_[0] = 0;
      do {
++        qDebug() << "A";
          r = SQLGetDiagRec(handleType,
-@@ -221,6 +225,7 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+                           handle,
+                           i,
+@@ -219,8 +224,10 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+                           0,
+                           0,
                            &msgLen);
++        qDebug() << "B";
          if ((r == SQL_SUCCESS || r == SQL_SUCCESS_WITH_INFO) && msgLen > 0)
              description_.resize(msgLen+1);
 +        qDebug() << "------- resized to " << description_.size();
          r = SQLGetDiagRec(handleType,
                              handle,
                              i,
-@@ -234,8 +239,10 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+@@ -229,25 +236,38 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+                             description_.data(),
+                             description_.size(),
+                             &msgLen);
++        qDebug() << "C";
+         if (r == SQL_SUCCESS || r == SQL_SUCCESS_WITH_INFO) {
++            qDebug() << "D";
+             if (nativeCode)
++            {
++                qDebug() << "D'";
                  *nativeCode = nativeCode_;
++            }
              QString tmpstore;
  #ifdef UNICODE
 +            qDebug() << "------- UNICODE";
@@ -50,3 +66,21 @@ index 18897372c3..673ff53b6d 100644
              tmpstore = QString::fromUtf8((const char*)description_.constData(), msgLen);
  #endif
              if(result != tmpstore) {
++                qDebug() << "E";
+                 if(!result.isEmpty())
++                {
++                    qDebug() << "E'";
+                     result += QLatin1Char(' ');
++                }
+                 result += tmpstore;
+             }
+         } else if (r == SQL_ERROR || r == SQL_INVALID_HANDLE) {
++            qDebug() << "F";
+             return result;
+         }
+         ++i;
+     } while (r != SQL_NO_DATA);
++    qDebug() << "G";
+     return result;
+ }
+ 
