@@ -1,5 +1,5 @@
 diff --git a/src/sql/drivers/odbc/qsql_odbc.cpp b/src/sql/drivers/odbc/qsql_odbc.cpp
-index 18897372c3..ffb81942b7 100644
+index 18897372c3..e3c6d69373 100644
 --- a/src/sql/drivers/odbc/qsql_odbc.cpp
 +++ b/src/sql/drivers/odbc/qsql_odbc.cpp
 @@ -72,19 +72,25 @@ inline static QString fromSQLTCHAR(const QVarLengthArray<SQLTCHAR>& input, int s
@@ -51,7 +51,7 @@ index 18897372c3..ffb81942b7 100644
          r = SQLGetDiagRec(handleType,
                              handle,
                              i,
-@@ -229,25 +238,38 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
+@@ -229,25 +238,39 @@ static QString qWarnODBCHandle(int handleType, SQLHANDLE handle, int *nativeCode
                              description_.data(),
                              description_.size(),
                              &msgLen);
@@ -85,6 +85,7 @@ index 18897372c3..ffb81942b7 100644
              return result;
          }
          ++i;
++        return result;
      } while (r != SQL_NO_DATA);
 +    qDebug() << "G";
      return result;
