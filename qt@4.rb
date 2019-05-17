@@ -48,7 +48,7 @@ class QtAT4 < Formula
   # Patch to fix ODBC crash
   patch do
     url "https://raw.githubusercontent.com/fcollot/homebrew-qt4/master/patches/odbc.patch"
-    sha256 "f653f9643b2d583001e14869da7f8982c3ad13898fa7cc0c62c72c2aa66cb6fc"
+    sha256 "f894e606c3deeb35bea953fc9cc4e6ecbf5751dfd03505fb22ceb5f2c1e16503"
   end
 
   option "with-docs", "Build documentation"
